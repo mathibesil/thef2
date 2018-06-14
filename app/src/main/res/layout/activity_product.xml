@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:layout_editor_absoluteY="25dp">
+
+    <Button
+        android:id="@+id/btnCancelar"
+        style="@android:style/Widget.Holo.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:text="Cancelar"
+        android:textColor="@android:color/background_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnGuardar"
+        style="@android:style/Widget.Holo.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:text="Guardar"
+        android:textColor="@android:color/background_dark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvProducts"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCancelar" />
+
+    <ProgressBar
+        android:id="@+id/pbProducts"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rvProducts"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnGuardar" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/common_google_signin_btn_text_dark_focused"
+        android:gravity="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/txtTotalLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="Total"
+            android:textColor="@android:color/background_light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/txtSignoLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtSignoLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:text="$"
+            android:textColor="@android:color/background_light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/txtTotal"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtTotal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:text="0"
+            android:textColor="@android:color/background_light"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="10000" />
+    </android.support.constraint.ConstraintLayout>
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:layout_editor_absoluteY="25dp">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/cl_root_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/mainNavigationn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".ui.main.view.MainActivity">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout_home"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_home"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/Theme.AppCompat.Light"
+                >
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/linearLayoutCompat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/toolbar_total"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginStart="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/cardview_light_background"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="135 restaurantes" />
+
+                    <TextView
+                        android:id="@+id/toolbar_text"
+                        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_marginStart="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/cardview_light_background"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/toolbar_total"
+                        tools:text="Some title" />
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.Toolbar>
+
+
+        </android.support.design.widget.AppBarLayout>
+    </android.support.design.widget.CoordinatorLayout>
+    <!--<ImageView-->
+    <!--android:id="@+id/imageView3"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="0dp"-->
+    <!--android:src="@drawable/bg_primary_login"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintDimensionRatio="w,1:1"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent" />-->
+
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/mainNavigationn"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:theme="@style/Theme.AppCompat"
+        app:itemTextColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/navigation" />
+</android.support.constraint.ConstraintLayout>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteY="25dp"
+    android:id="@+id/client_item_container"
+    >
+
+    <TextView
+        android:id="@+id/txtName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:maxLines="1"
+        android:text=""
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txtQuantity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Cliente1" />
+
+    <TextView
+        android:id="@+id/txtQuantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:maxLines="1"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Dirección1" />
+
+</android.support.constraint.ConstraintLayout>
