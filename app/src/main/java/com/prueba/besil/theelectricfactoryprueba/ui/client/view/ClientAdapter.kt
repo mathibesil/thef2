@@ -1,5 +1,6 @@
 package com.prueba.besil.theelectricfactoryprueba.ui.client.view
 
+import android.support.constraint.ConstraintLayout
 import android.support.constraint.Constraints
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -33,7 +34,7 @@ class ClientAdapter(var clientDTOList: List<ClientDTO>) : RecyclerView.Adapter<C
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val txtName = itemView.findViewById<TextView>(R.id.txtName)
         val txtDirection = itemView.findViewById<TextView>(R.id.txtQuantity)
-        val container = itemView.findViewById<Constraints>(R.id.client_item_container)
+        val container = itemView.findViewById<ConstraintLayout>(R.id.client_item_container)
     }
 
 }

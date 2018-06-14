@@ -22,6 +22,7 @@ class ProductPresenter<V : ProductMVPView, I : ProductMVPInteractor> @Inject int
                         listProducts.add(Pedido.PedidoProduct(product,0))
                     }
                     getView()?.updateProducts(Pedido(0, client, Date(), listProducts))
+                    loadersOff()
                 }, { error : Throwable ->
                     if (error is java.net.SocketTimeoutException || error is java.net.ConnectException) getView()?.showMessage("No se pudo conectar con servidor")
                     if (error is NoConnectivityException) getView()?.showMessage("Sin conexión a internet")

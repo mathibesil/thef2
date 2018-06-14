@@ -90,6 +90,7 @@ class ClientFragment : BaseFragment(), ClientMVPView {
 
     override fun updateClients(listClients: List<ClientDTO>) {
         adapter.clientDTOList = listClients
+        adapter.clientInterface = this
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
     }
@@ -121,7 +122,7 @@ class ClientFragment : BaseFragment(), ClientMVPView {
     }
 
     override fun itemClicked(client: ClientDTO) {
-        val intent = Intent(context, ProductActivity::class.java)
+        val intent = Intent(activity, ProductActivity::class.java)
         intent.putExtra("client", client)
         startActivity(intent)
     }

@@ -39,6 +39,9 @@ class ProductActivity : BaseActivity(), ProductMVPView {
         rvProducts.setLayoutManager(mGridLayoutManager)
         rvProducts.adapter = adapter
         presenter.getPedido(idPedido, client)
+        btnCancelar.setOnClickListener(View.OnClickListener {
+            this.finish()
+        })
 
     }
 

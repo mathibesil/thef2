@@ -20,7 +20,8 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ProductAdapter.ViewHolder, position: Int) {
         holder.txtName?.text = listPedidos[position].product.name
-        holder.etQuantity?.setText(listPedidos[position].quantity)
+        if(listPedidos[position].quantity>0)
+        holder.etQuantity?.setText(listPedidos[position].quantity.toString())
         Glide.with(context)
                 .load(listPedidos[position].product.img)
                 .into(holder.imgProduct)

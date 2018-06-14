@@ -33,6 +33,7 @@ ext{
     rxandroidVersion = '2.0.2'
     supportLibraryVersion = '27.1.1'
     calligraphyVersion = '2.2.0'
+    anko_version='0.10.5'
     //-
     //placeholderviewVersion = '0.6.1'
 }
