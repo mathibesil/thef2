@@ -8,6 +8,7 @@ import com.prueba.besil.theelectricfactoryprueba.R
 import com.prueba.besil.theelectricfactoryprueba.data.classes.Pedido
 import com.prueba.besil.theelectricfactoryprueba.data.network.DTO.ClientDTO
 import com.prueba.besil.theelectricfactoryprueba.data.network.DTO.ProductDTO
+import com.prueba.besil.theelectricfactoryprueba.data.sqlite.MyDatabaseOpenHelper
 import com.prueba.besil.theelectricfactoryprueba.ui.base.view.BaseActivity
 import com.prueba.besil.theelectricfactoryprueba.ui.product.interactor.ProductMVPInteractor
 import com.prueba.besil.theelectricfactoryprueba.ui.product.presenter.ProductMVPPresenter
@@ -26,26 +27,30 @@ class ProductActivity : BaseActivity(), ProductMVPView {
 
     private var idPedido: Int = 0
     private lateinit var client: ClientDTO
+    private lateinit var pedido: Pedido
     //endregion
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product)
         presenter.onAttach(this)
-//        if(intent.getStringExtra("pedido") != null)
-//            idPedido = intent.getStringExtra("pedido").toInt()
+        idPedido = intent.getIntExtra("idPedido",0).toInt()
         client = intent.extras.getSerializable("client") as ClientDTO
         val mGridLayoutManager = GridLayoutManager(this, 1)
         rvProducts.setLayoutManager(mGridLayoutManager)
         rvProducts.adapter = adapter
+        adapter.productInterface = this
         presenter.getPedido(idPedido, client)
         btnCancelar.setOnClickListener(View.OnClickListener {
             this.finish()
         })
-
+        btnGuardar.setOnClickListener(View.OnClickListener {
+            presenter.savePedido(pedido)
+        })
     }
 
     override fun updateProducts(pedido: Pedido) {
+        this.pedido = pedido
         adapter.listPedidos = pedido.pedidoProductList
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
@@ -77,4 +82,11 @@ class ProductActivity : BaseActivity(), ProductMVPView {
             pbProducts.visibility = View.GONE
     }
 
+    override fun totalCalc() {
+        var total = 0.0
+        for(pedidoProduct : Pedido.PedidoProduct in adapter.listPedidos){
+            total += pedidoProduct.quantity * pedidoProduct.product.price
+        }
+        txtTotal.text = total.toString()
+    }
 }

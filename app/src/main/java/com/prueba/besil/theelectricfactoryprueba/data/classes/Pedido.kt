@@ -5,5 +5,5 @@ import com.prueba.besil.theelectricfactoryprueba.data.network.DTO.ProductDTO
 import java.util.*
 
 class Pedido(val idPedido: Int, val client: ClientDTO, var date: Date, var pedidoProductList: List<PedidoProduct>){
-    class PedidoProduct(val product: ProductDTO, val quantity: Int)
+    class PedidoProduct(val product: ProductDTO, var quantity: Int)
 }

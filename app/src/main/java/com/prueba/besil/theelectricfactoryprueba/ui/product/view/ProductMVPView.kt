@@ -8,4 +8,5 @@ interface ProductMVPView : MVPView {
     fun swipeRefreshOff()
     fun loadProgress(enabled: Boolean)
     fun updateProducts(pedido: Pedido)
+    fun totalCalc()
 }

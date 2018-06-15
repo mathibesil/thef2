@@ -9,9 +9,11 @@ import com.prueba.besil.theelectricfactoryprueba.data.network.util.AddAuthInterc
 import com.prueba.besil.theelectricfactoryprueba.data.network.util.ConnectivityInterceptor
 import com.prueba.besil.theelectricfactoryprueba.data.preferences.AppPreferenceHelper
 import com.prueba.besil.theelectricfactoryprueba.data.preferences.PreferenceHelper
+import com.prueba.besil.theelectricfactoryprueba.data.sqlite.MyDatabaseOpenHelper
 import com.prueba.besil.theelectricfactoryprueba.di.BaseUrl
 import com.prueba.besil.theelectricfactoryprueba.di.PreferenceInfo
 import com.prueba.besil.theelectricfactoryprueba.ui.client.view.ClientAdapter
+import com.prueba.besil.theelectricfactoryprueba.ui.pedido.view.PedidoAdapter
 import com.prueba.besil.theelectricfactoryprueba.ui.product.view.ProductAdapter
 import com.prueba.besil.theelectricfactoryprueba.util.AppConstant
 import dagger.Module
@@ -94,11 +96,16 @@ class AppModule {
     internal fun provideBaseUrl(): String = AppConstant.BASEURL
 
     @Provides
-    @Singleton
     internal fun provideClientAdapter(): ClientAdapter = ClientAdapter(ArrayList())
 
     @Provides
-    @Singleton
     internal fun provideProductAdapter(): ProductAdapter = ProductAdapter()
+
+    @Provides
+    internal fun providePedidodapter(): PedidoAdapter = PedidoAdapter(ArrayList())
+
+    @Provides
+    @Singleton
+    internal fun provideSqliteHelper(context: Context): MyDatabaseOpenHelper = MyDatabaseOpenHelper(context)
 
 }

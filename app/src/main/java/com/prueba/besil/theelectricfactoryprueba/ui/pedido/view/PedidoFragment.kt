@@ -1,4 +1,4 @@
-package com.prueba.besil.theelectricfactoryprueba.ui.client.view
+package com.prueba.besil.theelectricfactoryprueba.ui.pedido.view
 
 
 import android.content.Context
@@ -13,27 +13,29 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.prueba.besil.theelectricfactoryprueba.R
+import com.prueba.besil.theelectricfactoryprueba.data.classes.Pedido
 import com.prueba.besil.theelectricfactoryprueba.data.network.DTO.ClientDTO
 import com.prueba.besil.theelectricfactoryprueba.ui.base.view.BaseFragment
-import com.prueba.besil.theelectricfactoryprueba.ui.client.interactor.ClientMVPInteractor
-import com.prueba.besil.theelectricfactoryprueba.ui.client.presenter.ClientPresenter
+import com.prueba.besil.theelectricfactoryprueba.ui.pedido.interactor.PedidoMVPInteractor
+import com.prueba.besil.theelectricfactoryprueba.ui.pedido.presenter.PedidoPresenter
 import com.prueba.besil.theelectricfactoryprueba.ui.product.view.ProductActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_clients.*
+import kotlinx.android.synthetic.main.fragment_pedidos.*
 import javax.inject.Inject
 
 
-class ClientFragment : BaseFragment(), ClientMVPView {
+class PedidoFragment : BaseFragment(), PedidoMVPView {
     //region vars
     @Inject
-    lateinit var presenter: ClientPresenter<ClientMVPView, ClientMVPInteractor>
+    lateinit var presenter: PedidoPresenter<PedidoMVPView, PedidoMVPInteractor>
     @Inject
-    lateinit var adapter: ClientAdapter
+    lateinit var adapter: PedidoAdapter
 
     //endregion
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_clients, container, false)
+        return inflater.inflate(R.layout.fragment_pedidos, container, false)
     }
+
     override fun setUp() {
         presenter.onAttach(this)
         if (isOnline()) {
@@ -54,24 +56,26 @@ class ClientFragment : BaseFragment(), ClientMVPView {
     private fun setUpStart() {
         //region RecyclerView
         val mGridLayoutManager = GridLayoutManager(this.context, 1)
-        rvClients.setLayoutManager(mGridLayoutManager)
-        rvClients.adapter = adapter
+        rvPedidos.setLayoutManager(mGridLayoutManager)
+        rvPedidos.adapter = adapter
         home_fragment_swiperefresh.setOnRefreshListener {
             if (!adapter.isLoading) {
+                adapter.pedidoList= mutableListOf()
                 adapter.isLoading = true
-                presenter.getClients()
+                presenter.getPedidos()
             } else swipeRefreshOff()
         }
         //endregion
         getBaseActivity()!!.toolbar_text.text = getString(R.string.toolbarTitle)
         getBaseActivity()?.setSupportActionBar(toolbar_home)
-        adapter.clientInterface = this
-        presenter.getClients()
+        adapter.pedidoInterface = this
+        adapter.pedidoList= mutableListOf()
+        presenter.getPedidos()
     }
 
     companion object {
-        internal val TAG = "ClientFragment"
-        fun newInstance(): ClientFragment = ClientFragment()
+        internal val TAG = "PedidoFragment"
+        fun newInstance(): PedidoFragment = PedidoFragment()
     }
 
     override fun onDestroyView() {
@@ -85,12 +89,11 @@ class ClientFragment : BaseFragment(), ClientMVPView {
     }
 
     //region LoadData
-    override fun firstLoadRestaurantes() {
-        presenter.getClients()
-    }
 
-    override fun updateClients(listClients: List<ClientDTO>) {
-        adapter.clientDTOList = listClients
+    override fun updatePedidos(pedido: Pedido) {
+        adapter.pedidoList.add(pedido)
+        adapter.pedidoList = (adapter.pedidoList.toList().sortedWith(compareBy(Pedido::date))).toMutableList()
+        adapter.pedidoInterface = this
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
     }
@@ -102,9 +105,9 @@ class ClientFragment : BaseFragment(), ClientMVPView {
 
     override fun loadProgress(enabled: Boolean) {
         if (enabled)
-            pbClients.visibility = View.VISIBLE
+            pbPedidos.visibility = View.VISIBLE
         else
-            pbClients.visibility = View.GONE
+            pbPedidos.visibility = View.GONE
     }
 
     override fun swipeRefreshOff() {
@@ -112,7 +115,7 @@ class ClientFragment : BaseFragment(), ClientMVPView {
     }
 
     override fun scrollToTop() {
-        rvClients.smoothScrollToPosition(0)
+        rvPedidos.smoothScrollToPosition(0)
     }
 
     override fun blockUi() {
@@ -121,8 +124,9 @@ class ClientFragment : BaseFragment(), ClientMVPView {
     override fun unBlockUi() {
     }
 
-    override fun itemClicked(client: ClientDTO) {
+    override fun itemClicked(pedido: Pedido, client:ClientDTO) {
         val intent = Intent(activity, ProductActivity::class.java)
+        intent.putExtra("idPedido", pedido.idPedido)
         intent.putExtra("client", client)
         startActivity(intent)
     }
