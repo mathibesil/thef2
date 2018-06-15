@@ -16,7 +16,9 @@ import javax.inject.Inject
 class PedidoPresenter<V : PedidoMVPView, I : PedidoMVPInteractor> @Inject internal constructor(interactor: I) : BasePresenter<V, I>(interactor), PedidoMVPPresenter<V, I> {
     @SuppressLint("SimpleDateFormat")
     override fun getPedidos() {
+        var haveData = false
         for(hash : HashMap<String, Any> in interactor?.getPedidos()!!){
+            haveData = true
             interactor?.getClient(hash["idClient"].toString().toInt())
             ?.subscribe({
                 val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -32,11 +34,14 @@ class PedidoPresenter<V : PedidoMVPView, I : PedidoMVPInteractor> @Inject intern
                     val jObjError = JSONObject(error.response().errorBody()!!.string())
                     getView()?.showMessage(jObjError.getString("messages"))
                 } catch (e: Exception) {
-                    getView()?.showMessage("Error al obtener datoes.")
+                    getView()?.showMessage("Error al obtener datos.")
                 }
                 loadersOff()
             })
         }
+        if(!haveData)
+            getView()?.showNoData(true)
+        loadersOff()
     }
 
     private fun loadersOff() {

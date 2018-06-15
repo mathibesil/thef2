@@ -10,4 +10,5 @@ interface PedidoMVPView : MVPView {
     fun scrollToTop()
     fun itemClicked(pedido: Pedido, client: ClientDTO)
     fun updatePedidos(pedido: Pedido)
+    fun showNoData(enabled: Boolean)
 }

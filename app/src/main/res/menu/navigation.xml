@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_negro"
-        android:title="@string/title_home"
+        android:id="@+id/navigation_client"
+        android:icon="@drawable/img_clientes_negro"
+        android:title="@string/title_clientes"
         android:checked="true"
         />
     <item
-        android:id="@+id/navigation_notifications2"
-        android:icon="@drawable/ic_map_24_negro"
-        android:title="@string/title_notifications" />
+        android:id="@+id/navigation_pedido"
+        android:icon="@drawable/img_pedidos_negro"
+        android:title="@string/title_pedidos"
+        android:checked="true"
+        />
 </menu>

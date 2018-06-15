@@ -47,7 +47,7 @@ class ProductPresenter<V : ProductMVPView, I : ProductMVPInteractor> @Inject int
                         val jObjError = JSONObject(error.response().errorBody()!!.string())
                         getView()?.showMessage(jObjError.getString("messages"))
                     } catch (e: Exception) {
-                        getView()?.showMessage("Error al obtener datoes.")
+                        getView()?.showMessage("Error al obtener datos.")
                     }
                     loadersOff()
                 })
@@ -69,6 +69,7 @@ class ProductPresenter<V : ProductMVPView, I : ProductMVPInteractor> @Inject int
     override fun savePedido(pedido: Pedido) {
         doAsync {
             interactor?.savePedido(pedido)
+            getView()?.close()
         }
     }
 }

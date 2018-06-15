@@ -1,5 +1,6 @@
 package com.prueba.besil.theelectricfactoryprueba.ui.product.view
 
+import android.app.Activity
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.view.View
@@ -45,7 +46,15 @@ class ProductActivity : BaseActivity(), ProductMVPView {
             this.finish()
         })
         btnGuardar.setOnClickListener(View.OnClickListener {
-            presenter.savePedido(pedido)
+            var noQuantity = true
+            for(pedidoProduct : Pedido.PedidoProduct in adapter.listPedidos){
+                if(pedidoProduct.quantity>0)
+                    noQuantity = false
+            }
+            if(noQuantity)
+                Toast.makeText(this,"Debe tener al menos un producto con cantidad mayor a 0", Toast.LENGTH_LONG).show()
+            else
+                presenter.savePedido(pedido)
         })
     }
 
@@ -88,5 +97,9 @@ class ProductActivity : BaseActivity(), ProductMVPView {
             total += pedidoProduct.quantity * pedidoProduct.product.price
         }
         txtTotal.text = total.toString()
+    }
+    override fun close(){
+        setResult(Activity.RESULT_OK)
+        this.finish()
     }
 }

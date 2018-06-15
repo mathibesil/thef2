@@ -1,6 +1,7 @@
 package com.prueba.besil.theelectricfactoryprueba.ui.pedido.view
 
 
+import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -21,6 +22,7 @@ import com.prueba.besil.theelectricfactoryprueba.ui.pedido.presenter.PedidoPrese
 import com.prueba.besil.theelectricfactoryprueba.ui.product.view.ProductActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_pedidos.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 
@@ -54,6 +56,8 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
     }
 
     private fun setUpStart() {
+        getBaseActivity()!!.toolbar_text.text = "Pedidos"
+        getBaseActivity()?.setSupportActionBar(toolbar_home)
         //region RecyclerView
         val mGridLayoutManager = GridLayoutManager(this.context, 1)
         rvPedidos.setLayoutManager(mGridLayoutManager)
@@ -66,8 +70,6 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
             } else swipeRefreshOff()
         }
         //endregion
-        getBaseActivity()!!.toolbar_text.text = getString(R.string.toolbarTitle)
-        getBaseActivity()?.setSupportActionBar(toolbar_home)
         adapter.pedidoInterface = this
         adapter.pedidoList= mutableListOf()
         presenter.getPedidos()
@@ -92,10 +94,14 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
 
     override fun updatePedidos(pedido: Pedido) {
         adapter.pedidoList.add(pedido)
-        adapter.pedidoList = (adapter.pedidoList.toList().sortedWith(compareBy(Pedido::date))).toMutableList()
+        adapter.pedidoList = (adapter.pedidoList.toList().sortedWith(compareByDescending(Pedido::date))).toMutableList()
         adapter.pedidoInterface = this
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
+        if(adapter.pedidoList.size==0)
+            showNoData(true)
+        else
+            showNoData(false)
     }
     //endregion
 
@@ -128,6 +134,22 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
         val intent = Intent(activity, ProductActivity::class.java)
         intent.putExtra("idPedido", pedido.idPedido)
         intent.putExtra("client", client)
-        startActivity(intent)
+        startActivityForResult(intent, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+      if(requestCode==1) {
+          if (resultCode == Activity.RESULT_OK) {
+              adapter.pedidoList = mutableListOf()
+              presenter.getPedidos()
+          }
+      }
+    }
+    override fun showNoData(enabled: Boolean) {
+        if(enabled)
+            txtNoData.visibility = View.VISIBLE
+        else
+            txtNoData.visibility = View.GONE
     }
 }

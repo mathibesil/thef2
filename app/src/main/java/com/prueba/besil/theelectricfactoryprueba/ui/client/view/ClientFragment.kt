@@ -63,7 +63,7 @@ class ClientFragment : BaseFragment(), ClientMVPView {
             } else swipeRefreshOff()
         }
         //endregion
-        getBaseActivity()!!.toolbar_text.text = getString(R.string.toolbarTitle)
+        getBaseActivity()!!.toolbar_text.text = "Clientes"
         getBaseActivity()?.setSupportActionBar(toolbar_home)
         adapter.clientInterface = this
         presenter.getClients()
@@ -122,8 +122,10 @@ class ClientFragment : BaseFragment(), ClientMVPView {
     }
 
     override fun itemClicked(client: ClientDTO) {
-        val intent = Intent(activity, ProductActivity::class.java)
-        intent.putExtra("client", client)
-        startActivity(intent)
+        if(!adapter.isLoading){
+            val intent = Intent(activity, ProductActivity::class.java)
+            intent.putExtra("client", client)
+            startActivity(intent)
+        }
     }
 }

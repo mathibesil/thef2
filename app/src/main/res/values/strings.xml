@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TheElectricFactoryPrueba</string>
-    <string name="title_home">Inicio</string>
+    <string name="title_clientes">CLIENTES</string>
+    <string name="title_pedidos">PEDIDOS</string>
     <string name="title_notifications">Mapa</string>
     <string name="toolbarTitle">Clientes</string>
 </resources>

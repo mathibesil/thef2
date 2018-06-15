@@ -9,4 +9,5 @@ interface ProductMVPView : MVPView {
     fun loadProgress(enabled: Boolean)
     fun updateProducts(pedido: Pedido)
     fun totalCalc()
+    fun close()
 }

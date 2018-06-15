@@ -22,7 +22,7 @@ class ClientPresenter <V: ClientMVPView, I: ClientMVPInteractor> @Inject interna
                         val jObjError = JSONObject(error.response().errorBody()!!.string())
                         getView()?.showMessage(jObjError.getString("messages"))
                     } catch (e: Exception) {
-                        getView()?.showMessage("Error al obtener datoes.")
+                        getView()?.showMessage("Error al obtener datos.")
                     }
                     loadersOff()
                 })
