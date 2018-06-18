@@ -17,16 +17,20 @@ class PedidoPresenter<V : PedidoMVPView, I : PedidoMVPInteractor> @Inject intern
     @SuppressLint("SimpleDateFormat")
     override fun getPedidos() {
         var haveData = false
+        //cargo pedidos de la BD local
         for(hash : HashMap<String, Any> in interactor?.getPedidos()!!){
+            getView()?.loadProgress(true)
             haveData = true
-            interactor?.getClient(hash["idClient"].toString().toInt())
+            interactor?.getClient(hash["idClient"].toString().toInt()) //cargo información del cliente desde internet
             ?.subscribe({
+                //al obtener información del cliente, creo un pedido y lo devuelvo al a view.
                 val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val myDate = simpleDateFormat.parse(hash["date"].toString())
                 val pedido = Pedido(hash["idPedido"].toString().toInt(),it, myDate, listOf())
                 getView()?.updatePedidos(pedido)
                 loadersOff()
             }, { error : Throwable ->
+                //muestro errores
                 if (error is java.net.SocketTimeoutException || error is java.net.ConnectException) getView()?.showMessage("No se pudo conectar con servidor")
                 if (error is NoConnectivityException) getView()?.showMessage("Sin conexión a internet")
                 try {
@@ -39,7 +43,7 @@ class PedidoPresenter<V : PedidoMVPView, I : PedidoMVPInteractor> @Inject intern
                 loadersOff()
             })
         }
-        if(!haveData)
+        if(!haveData) // si no tengo pedidos en la BD local, le indico a la view para que muestre mensaje.
             getView()?.showNoData(true)
         loadersOff()
     }

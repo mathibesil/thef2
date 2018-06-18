@@ -28,8 +28,9 @@ class ProductInteractor @Inject internal constructor(preferenceHelper: Preferenc
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val formattedDate = df.format(pedido.date)
         myDatabaseOpenHelper.use {
-            transaction {
+            transaction { //Inicio transacción por si falla.
                 if(pedido.idPedido>0){
+                    //si es un pedido existente, elimino e inserto los nuevos datos.
                     delete("pedidos_productos","id_pedido = {idPedido}", "idPedido" to pedido.idPedido)
                     delete("pedidos","id = {idPedido}", "idPedido" to pedido.idPedido)
                     idAuto = pedido.idPedido.toLong()
@@ -38,10 +39,12 @@ class ProductInteractor @Inject internal constructor(preferenceHelper: Preferenc
                             "id_client" to pedido.client.id,
                             "date" to formattedDate)
                 }else{
+                    //Si es un pedido nuevo, luego de guardar obtengo el id auto genereado por la BD.
                     idAuto = insert("pedidos",
                             "id_client" to pedido.client.id,
                             "date" to formattedDate)
                 }
+                //por cada producto guardo para un id de producto, su id y cantidad en la BD
                 for (pedidoProduct: Pedido.PedidoProduct in pedido.pedidoProductList) {
                     insert("pedidos_productos",
                             "id_pedido" to idAuto,
@@ -53,12 +56,14 @@ class ProductInteractor @Inject internal constructor(preferenceHelper: Preferenc
      }
 
     override fun getProducts(): Observable<List<ProductDTO>> {
+        //obtengo productos desde internet.
         return retrofit.create(ThefService::class.java).getProducts().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
     }
 
     override fun getPedidosProducts(idPedido: Int, idClient: Int): List<HashMap<String, Any>> {
         val pedidosProductsList = mutableListOf<HashMap<String, Any>>()
         myDatabaseOpenHelper.use {
+            //Obtengo productos para un pedido en la BD, y creo un Hash con id del producto y su cantidad.
             select("pedidos_productos").whereArgs("(id_pedido = {idPedido})",
                     "idPedido" to idPedido).exec {
                 while (this.moveToNext()) {

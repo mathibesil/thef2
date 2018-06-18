@@ -15,19 +15,21 @@ import com.prueba.besil.theelectricfactoryprueba.R
 import com.prueba.besil.theelectricfactoryprueba.data.classes.Pedido
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
+    //region var
     var isLoading: Boolean = false
     var listPedidos: List<Pedido.PedidoProduct> = listOf()
     lateinit var context: Context
     lateinit var productInterface: ProductMVPView
+    //endregion
 
     override fun onBindViewHolder(holder: ProductAdapter.ViewHolder, position: Int) {
-        holder.myCustomEditTextListener.updatePosition(position)
+        holder.myCustomEditTextListener.updatePosition(position) //le indico al listener de cada ítem la posición del mismo
         holder.txtName?.text = listPedidos[position].product.name
-        if (listPedidos[position].quantity > 0)
+        if (listPedidos[position].quantity > 0) //solo cargo cantidades si tiene más de 0 en cantidad
             holder.etQuantity.setText(listPedidos[position].quantity.toString())
         else
             holder.etQuantity.setText("")
-        Glide.with(context)
+        Glide.with(context) //cargo imágenes en segundo plano
                 .load(listPedidos[position].product.img)
                 .into(holder.imgProduct)
     }
@@ -35,7 +37,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.product_item_layout, parent, false)
         context = parent.context
-        return ViewHolder(v, MyCustomEditTextListener())
+        return ViewHolder(v, MyCustomEditTextListener()) //instancio listener por cada ítem
     }
 
     override fun getItemCount(): Int {
@@ -64,6 +66,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            //al cambiar cantidad en TextView, cambio cantidad en el ítem de esa posición en la lista.
             if (s!!.isNotEmpty())
                 listPedidos[this.position].quantity = s.toString().toInt()
             else

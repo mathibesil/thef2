@@ -18,11 +18,14 @@ import kotlin.collections.HashMap
 
 class ProductPresenter<V : ProductMVPView, I : ProductMVPInteractor> @Inject internal constructor(interactor: I) : BasePresenter<V, I>(interactor), ProductMVPPresenter<V, I> {
     fun getProducts(client: ClientDTO, pedidosProducts: List<HashMap<String, Any>>?, idPedido: Int) {
+        getView()?.loadProgress(true)
         interactor?.getProducts()
                 ?.subscribe({
+                    //Obtengo productos desde internet.
                     val listProducts: MutableList<Pedido.PedidoProduct> = mutableListOf()
                     for (product: ProductDTO in it) {
                         var quantityTemp =0
+                        //si es un pedido a modificar cargo cantidades en los productos.
                         if (pedidosProducts != null) {
                             for(hash:HashMap<String, Any> in pedidosProducts){
                                 if(hash["idProduct"]==product.id){
@@ -30,16 +33,15 @@ class ProductPresenter<V : ProductMVPView, I : ProductMVPInteractor> @Inject int
                                 }
                             }
                         }
+                        //cargo productos en lista
                         listProducts.add(Pedido.PedidoProduct(product, quantityTemp))
                     }
-                    val c = Calendar.getInstance().time
-                    val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                    val formattedDate = df.format(c)
-                    val date = df.parse(formattedDate)
-
-                    getView()?.updateProducts(Pedido(idPedido, client, date , listProducts))
-                    loadersOff()
+                    //le devuelvo a la view un pedido (el nuevo o uno a modificar), con sus respectivos
+                    //productos para mostrar.
+                    getView()?.updateProducts(Pedido(idPedido, client, Calendar.getInstance().time , listProducts))
+                    getView()?.loadProgress(false)
                 }, { error: Throwable ->
+                    //muestro errores
                     if (error is java.net.SocketTimeoutException || error is java.net.ConnectException) getView()?.showMessage("No se pudo conectar con servidor")
                     if (error is NoConnectivityException) getView()?.showMessage("Sin conexión a internet")
                     try {
@@ -49,27 +51,30 @@ class ProductPresenter<V : ProductMVPView, I : ProductMVPInteractor> @Inject int
                     } catch (e: Exception) {
                         getView()?.showMessage("Error al obtener datos.")
                     }
-                    loadersOff()
+                    getView()?.loadProgress(false)
                 })
     }
 
     override fun getPedido(idPedido: Int, client: ClientDTO) {
+        //si el id del pedido es 0 quiere decir que es un nuevo pedido y no uno a modificar.
         if (idPedido == 0) {
             getProducts(client, null, idPedido)
         }else{
+            //si es un pedido a modificar, le pido al interactor que traiga los id de los productos
+            //para ese pedido.
             getProducts(client,interactor?.getPedidosProducts(idPedido,client.id), idPedido)
         }
     }
 
-    private fun loadersOff() {
-        getView()?.loadProgress(false)
-        getView()?.swipeRefreshOff()
-    }
-
     override fun savePedido(pedido: Pedido) {
-        doAsync {
-            interactor?.savePedido(pedido)
-            getView()?.close()
-        }
+            doAsync {
+                try {
+                    //guardo los pedidos en la BD local (Sqlite), y le aviso a la View para que se cierre
+                    interactor?.savePedido(pedido)
+                    getView()?.close()
+                } catch (e: Exception) {
+                    throw e
+                }
+            }
     }
 }

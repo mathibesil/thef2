@@ -5,7 +5,6 @@ import android.content.Context
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.prueba.besil.theelectricfactoryprueba.data.network.util.AddAuthInterceptor
 import com.prueba.besil.theelectricfactoryprueba.data.network.util.ConnectivityInterceptor
 import com.prueba.besil.theelectricfactoryprueba.data.preferences.AppPreferenceHelper
 import com.prueba.besil.theelectricfactoryprueba.data.preferences.PreferenceHelper
@@ -18,7 +17,6 @@ import com.prueba.besil.theelectricfactoryprueba.ui.product.view.ProductAdapter
 import com.prueba.besil.theelectricfactoryprueba.util.AppConstant
 import dagger.Module
 import dagger.Provides
-import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -41,9 +39,6 @@ class AppModule {
     internal fun provideprefFileName(): String = AppConstant.PREF_NAME
 
     @Provides
-    internal fun provideCompositeDisposable(): CompositeDisposable = CompositeDisposable()
-
-    @Provides
     @Singleton
     fun provideHttpCache(application: Application): Cache {
         val cacheSize: Long = 10 * 1024 * 1024
@@ -60,18 +55,11 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun provideOkhttpClient(cache: Cache, addAuthInterceptor: AddAuthInterceptor, connectivityInterceptor: ConnectivityInterceptor): OkHttpClient {
+    fun provideOkhttpClient(cache: Cache, connectivityInterceptor: ConnectivityInterceptor): OkHttpClient {
         val client = OkHttpClient.Builder()
                 .addInterceptor(connectivityInterceptor)
-                .addInterceptor(addAuthInterceptor)
         client.cache(cache)
         return client.build()
-    }
-
-    @Provides
-    @Singleton
-    fun provideAddAuthInterceptor(preferenceHelper: AppPreferenceHelper): AddAuthInterceptor {
-        return AddAuthInterceptor(preferenceHelper)
     }
 
     @Provides

@@ -24,21 +24,41 @@ import javax.inject.Inject
 
 
 class ClientFragment : BaseFragment(), ClientMVPView {
-    //region vars
+    //region var
     @Inject
     lateinit var presenter: ClientPresenter<ClientMVPView, ClientMVPInteractor>
     @Inject
     lateinit var adapter: ClientAdapter
-
     //endregion
+
+    companion object {
+        //devuelvo instancia del objeto y asigno valor a TAG para saber que fragmento es
+        internal val TAG = "ClientFragment"
+        fun newInstance(): ClientFragment = ClientFragment()
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_clients, container, false)
     }
+
     override fun setUp() {
         presenter.onAttach(this)
-        if (isOnline()) {
-            setUpStart()
-        } else {
+        if (isOnline()) { //verifico conexión a internet
+            getBaseActivity()!!.toolbar_text.text = "Clientes"
+            getBaseActivity()?.setSupportActionBar(toolbar_home)
+            home_fragment_swiperefresh.setOnRefreshListener { //swipe para actualizar.
+                if (!adapter.isLoading) {
+                    adapter.isLoading = true //utilizo variable para no actualizar si ya esta actualizando.
+                    presenter.getClients()
+                } else swipeRefreshOff()
+            }
+            //region recycler
+            val mGridLayoutManager = GridLayoutManager(this.context, 1)
+            rvClients.setLayoutManager(mGridLayoutManager)
+            rvClients.adapter = adapter
+            adapter.clientInterface = this
+            //endregion
+            presenter.getClients() //le indico al presentador que cargue los clientes.
+        } else { //si no tengo internet
             AlertDialog.Builder(this.context!!)
                     .setTitle("Se necesita internet")
                     .setMessage("La aplicación necesita internet para poder funcionar")
@@ -51,29 +71,6 @@ class ClientFragment : BaseFragment(), ClientMVPView {
         }
     }
 
-    private fun setUpStart() {
-        //region RecyclerView
-        val mGridLayoutManager = GridLayoutManager(this.context, 1)
-        rvClients.setLayoutManager(mGridLayoutManager)
-        rvClients.adapter = adapter
-        home_fragment_swiperefresh.setOnRefreshListener {
-            if (!adapter.isLoading) {
-                adapter.isLoading = true
-                presenter.getClients()
-            } else swipeRefreshOff()
-        }
-        //endregion
-        getBaseActivity()!!.toolbar_text.text = "Clientes"
-        getBaseActivity()?.setSupportActionBar(toolbar_home)
-        adapter.clientInterface = this
-        presenter.getClients()
-    }
-
-    companion object {
-        internal val TAG = "ClientFragment"
-        fun newInstance(): ClientFragment = ClientFragment()
-    }
-
     override fun onDestroyView() {
         presenter.onDetach()
         super.onDestroyView()
@@ -84,17 +81,11 @@ class ClientFragment : BaseFragment(), ClientMVPView {
         return cm.activeNetworkInfo != null
     }
 
-    //region LoadData
-    override fun firstLoadRestaurantes() {
-        presenter.getClients()
-    }
-
-    override fun updateClients(listClients: List<ClientDTO>) {
+    override fun updateClients(listClients: List<ClientDTO>) {//cargo los clientes que obtengo del presentador.
         adapter.clientDTOList = listClients
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
     }
-    //endregion
 
     override fun showMessage(texto: String) {
         Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
@@ -111,21 +102,10 @@ class ClientFragment : BaseFragment(), ClientMVPView {
         home_fragment_swiperefresh.isRefreshing = false
     }
 
-    override fun scrollToTop() {
-        rvClients.smoothScrollToPosition(0)
-    }
-
-    override fun blockUi() {
-    }
-
-    override fun unBlockUi() {
-    }
-
-    override fun itemClicked(client: ClientDTO) {
-        if(!adapter.isLoading){
+    override fun itemClicked(client: ClientDTO) { //capturo si en el adaptador se seleccionó un cliente.
+            //inicio ventana de productos y le envío el cliente seleccionado
             val intent = Intent(activity, ProductActivity::class.java)
             intent.putExtra("client", client)
             startActivity(intent)
-        }
     }
 }

@@ -22,6 +22,7 @@ class PedidoInteractor @Inject internal constructor(preferenceHelper: Preference
     lateinit var myDatabaseOpenHelper: MyDatabaseOpenHelper
 
     override fun getPedidos(): List<HashMap<String, Any>> {
+        //obtengo id, id de cliente y fecha de todos los pedidos que esten en la BD local.
         val pedidosList = mutableListOf<HashMap<String, Any>>()
         myDatabaseOpenHelper.use {
             select("pedidos").exec {
@@ -38,6 +39,7 @@ class PedidoInteractor @Inject internal constructor(preferenceHelper: Preference
     }
 
     override fun getClient(idClient: Int): Observable<ClientDTO> {
+        //obtengo la inforación de un cliente en particular desde internet.
         return retrofit.create(ThefService::class.java).getClientById(idClient).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
     }
 

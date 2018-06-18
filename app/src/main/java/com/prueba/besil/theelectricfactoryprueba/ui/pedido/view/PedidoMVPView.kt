@@ -7,7 +7,6 @@ import com.prueba.besil.theelectricfactoryprueba.ui.base.view.MVPView
 interface PedidoMVPView : MVPView {
     fun swipeRefreshOff()
     fun loadProgress(enabled: Boolean)
-    fun scrollToTop()
     fun itemClicked(pedido: Pedido, client: ClientDTO)
     fun updatePedidos(pedido: Pedido)
     fun showNoData(enabled: Boolean)

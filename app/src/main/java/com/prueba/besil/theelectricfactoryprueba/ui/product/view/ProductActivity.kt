@@ -35,17 +35,21 @@ class ProductActivity : BaseActivity(), ProductMVPView {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_product)
         presenter.onAttach(this)
+        //obtengo id del pedido y el cliente por intent.
         idPedido = intent.getIntExtra("idPedido",0).toInt()
         client = intent.extras.getSerializable("client") as ClientDTO
+        //region recycler
         val mGridLayoutManager = GridLayoutManager(this, 1)
         rvProducts.setLayoutManager(mGridLayoutManager)
         rvProducts.adapter = adapter
         adapter.productInterface = this
+        //endregion
         presenter.getPedido(idPedido, client)
-        btnCancelar.setOnClickListener(View.OnClickListener {
+        btnCancelar.setOnClickListener(View.OnClickListener {// botón cancelar
             this.finish()
         })
         btnGuardar.setOnClickListener(View.OnClickListener {
+            //antes de guardar verifico si tengo al menos un producto con canatidad mayor a 0
             var noQuantity = true
             for(pedidoProduct : Pedido.PedidoProduct in adapter.listPedidos){
                 if(pedidoProduct.quantity>0)
@@ -54,32 +58,18 @@ class ProductActivity : BaseActivity(), ProductMVPView {
             if(noQuantity)
                 Toast.makeText(this,"Debe tener al menos un producto con cantidad mayor a 0", Toast.LENGTH_LONG).show()
             else
-                presenter.savePedido(pedido)
+                presenter.savePedido(pedido) //guardo pedido (presentador)
         })
     }
 
-    override fun updateProducts(pedido: Pedido) {
+    override fun updateProducts(pedido: Pedido) { //cargo pedido desde presentador
         this.pedido = pedido
         adapter.listPedidos = pedido.pedidoProductList
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
     }
 
-    override fun onFragmentDetached(tag: String) {
-    }
-    override fun swipeRefreshOff() {
-       // home_fragment_swiperefresh.isRefreshing = false
-    }
-    override fun blockUi() {
 
-    }
-
-    override fun unBlockUi() {
-
-    }
-
-    override fun onFragmentAttached() {
-    }
     override fun showMessage(texto: String) {
         Toast.makeText(this, texto, Toast.LENGTH_SHORT).show()
     }
@@ -91,7 +81,7 @@ class ProductActivity : BaseActivity(), ProductMVPView {
             pbProducts.visibility = View.GONE
     }
 
-    override fun totalCalc() {
+    override fun totalCalc() { //sumo todos los productos y actualizo total desde adat
         var total = 0.0
         for(pedidoProduct : Pedido.PedidoProduct in adapter.listPedidos){
             total += pedidoProduct.quantity * pedidoProduct.product.price
@@ -101,5 +91,10 @@ class ProductActivity : BaseActivity(), ProductMVPView {
     override fun close(){
         setResult(Activity.RESULT_OK)
         this.finish()
+    }
+    override fun onFragmentDetached(tag: String) {
+    }
+
+    override fun onFragmentAttached() {
     }
 }

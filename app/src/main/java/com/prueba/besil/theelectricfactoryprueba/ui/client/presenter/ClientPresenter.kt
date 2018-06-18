@@ -10,11 +10,14 @@ import javax.inject.Inject
 
 class ClientPresenter <V: ClientMVPView, I: ClientMVPInteractor> @Inject internal constructor(interactor: I) : BasePresenter<V,I>(interactor), ClientMVPPresenter<V,I>{
     override fun getClients() {
-        interactor?.getClients()
+        getView()?.loadProgress(true)
+        interactor?.getClients() //los clientes que obtengo del interactor
                 ?.subscribe({
+                    //si esta ok emito la lista y la envío a la función de la interface, en la view.
                     getView()?.updateClients(it)
-                    loadersOff()
+                    loadersOff()//oculto progress bar
                 }, { error : Throwable ->
+                    //en caso de error muestro en el view.
                     if (error is java.net.SocketTimeoutException || error is java.net.ConnectException) getView()?.showMessage("No se pudo conectar con servidor")
                     if (error is NoConnectivityException) getView()?.showMessage("Sin conexión a internet")
                     try {
@@ -27,8 +30,6 @@ class ClientPresenter <V: ClientMVPView, I: ClientMVPInteractor> @Inject interna
                     loadersOff()
                 })
     }
-
-
 
     private fun loadersOff() {
         getView()?.loadProgress(false)

@@ -16,6 +16,7 @@ class ClientInteractor @Inject internal constructor(preferenceHelper: Preference
     lateinit var retrofit: Retrofit
 
     override fun getClients(): Observable<List<ClientDTO>> {
+        //obtengo los clientes de internet y se los envío al presentador
         return retrofit.create(ThefService::class.java).getClients().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
     }
 

@@ -7,7 +7,5 @@ interface ClientMVPView : MVPView {
     fun updateClients(listClients: List<ClientDTO>)
     fun swipeRefreshOff()
     fun loadProgress(enabled: Boolean)
-    fun firstLoadRestaurantes()
-    fun scrollToTop()
     fun itemClicked(client: ClientDTO)
 }

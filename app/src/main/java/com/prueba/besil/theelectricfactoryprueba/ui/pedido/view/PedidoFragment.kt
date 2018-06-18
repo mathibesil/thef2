@@ -32,16 +32,38 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
     lateinit var presenter: PedidoPresenter<PedidoMVPView, PedidoMVPInteractor>
     @Inject
     lateinit var adapter: PedidoAdapter
-
     //endregion
+
+    companion object {
+        //devuelvo instancia del objeto y asigno valor a TAG para saber que fragmento es
+        internal val TAG = "PedidoFragment"
+        fun newInstance(): PedidoFragment = PedidoFragment()
+
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_pedidos, container, false)
     }
 
     override fun setUp() {
         presenter.onAttach(this)
-        if (isOnline()) {
-            setUpStart()
+        if (isOnline()) {//verifico conexión a internet
+            getBaseActivity()!!.toolbar_text.text = "Pedidos"
+            getBaseActivity()?.setSupportActionBar(toolbar_home)
+            home_fragment_swiperefresh.setOnRefreshListener {//swipe para actualizar.
+                if (!adapter.isLoading) {
+                    adapter.pedidoList= mutableListOf()
+                    adapter.isLoading = true//utilizo variable para no actualizar si ya esta actualizando.
+                    presenter.getPedidos()
+                } else swipeRefreshOff()
+            }
+            //region Recycler
+            val mGridLayoutManager = GridLayoutManager(this.context, 1)
+            rvPedidos.setLayoutManager(mGridLayoutManager)
+            rvPedidos.adapter = adapter
+            adapter.pedidoInterface = this
+            adapter.pedidoList= mutableListOf()
+            //endregion
+            presenter.getPedidos()//le indico al presentador que cargue los pedidos.
         } else {
             AlertDialog.Builder(this.context!!)
                     .setTitle("Se necesita internet")
@@ -55,31 +77,6 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
         }
     }
 
-    private fun setUpStart() {
-        getBaseActivity()!!.toolbar_text.text = "Pedidos"
-        getBaseActivity()?.setSupportActionBar(toolbar_home)
-        //region RecyclerView
-        val mGridLayoutManager = GridLayoutManager(this.context, 1)
-        rvPedidos.setLayoutManager(mGridLayoutManager)
-        rvPedidos.adapter = adapter
-        home_fragment_swiperefresh.setOnRefreshListener {
-            if (!adapter.isLoading) {
-                adapter.pedidoList= mutableListOf()
-                adapter.isLoading = true
-                presenter.getPedidos()
-            } else swipeRefreshOff()
-        }
-        //endregion
-        adapter.pedidoInterface = this
-        adapter.pedidoList= mutableListOf()
-        presenter.getPedidos()
-    }
-
-    companion object {
-        internal val TAG = "PedidoFragment"
-        fun newInstance(): PedidoFragment = PedidoFragment()
-    }
-
     override fun onDestroyView() {
         presenter.onDetach()
         super.onDestroyView()
@@ -90,20 +87,18 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
         return cm.activeNetworkInfo != null
     }
 
-    //region LoadData
-
-    override fun updatePedidos(pedido: Pedido) {
+    override fun updatePedidos(pedido: Pedido) { //cargo los pedidos que obtengo del presentador.
         adapter.pedidoList.add(pedido)
+        //ordeno los pedidos por fecha descendente
         adapter.pedidoList = (adapter.pedidoList.toList().sortedWith(compareByDescending(Pedido::date))).toMutableList()
         adapter.pedidoInterface = this
         adapter.isLoading = false
         adapter.notifyDataSetChanged()
-        if(adapter.pedidoList.size==0)
+        if(adapter.pedidoList.size==0) // si no tengo pedidos muestro mensaje
             showNoData(true)
         else
             showNoData(false)
     }
-    //endregion
 
     override fun showMessage(texto: String) {
         Toast.makeText(context, texto, Toast.LENGTH_SHORT).show()
@@ -118,16 +113,6 @@ class PedidoFragment : BaseFragment(), PedidoMVPView {
 
     override fun swipeRefreshOff() {
         home_fragment_swiperefresh.isRefreshing = false
-    }
-
-    override fun scrollToTop() {
-        rvPedidos.smoothScrollToPosition(0)
-    }
-
-    override fun blockUi() {
-    }
-
-    override fun unBlockUi() {
     }
 
     override fun itemClicked(pedido: Pedido, client:ClientDTO) {

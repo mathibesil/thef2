@@ -12,13 +12,16 @@ import java.text.SimpleDateFormat
 
 class PedidoAdapter(var pedidoList: MutableList<Pedido>) : RecyclerView.Adapter<PedidoAdapter.ViewHolder>() {
     var isLoading: Boolean = false
-    lateinit var pedidoInterface: PedidoMVPView
+    lateinit var pedidoInterface: PedidoMVPView//se utiliza interfaz de fragmento pedidos para capturar el evento
+                                               //al seleccionar uno.
 
     override fun onBindViewHolder(holder: PedidoAdapter.ViewHolder, position: Int) {
+        //por cada ítem de la lista se le asigna texto y el listener onclick
         holder.container.setOnClickListener(View.OnClickListener {
             pedidoInterface.itemClicked(pedidoList[position],pedidoList[position].client)
         })
         holder.txtName?.text = pedidoList[position].client.name
+        //muestro la fecha con un formato determinado
         val df = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
         val formattedDate = df.format(pedidoList[position].date)
         holder.txtDirection?.text = formattedDate
@@ -34,6 +37,7 @@ class PedidoAdapter(var pedidoList: MutableList<Pedido>) : RecyclerView.Adapter<
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        //se enlaza variables con parte visual de cada ítem.
         val txtName = itemView.findViewById<TextView>(R.id.txtName)
         val txtDirection = itemView.findViewById<TextView>(R.id.txtQuantity)
         val container = itemView.findViewById<ConstraintLayout>(R.id.client_item_container)

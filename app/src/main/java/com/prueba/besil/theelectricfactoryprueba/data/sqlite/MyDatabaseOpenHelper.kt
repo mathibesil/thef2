@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import org.jetbrains.anko.db.*
 import javax.inject.Inject
 
-class MyDatabaseOpenHelper @Inject constructor(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "thefDB", null, 7) {
+class MyDatabaseOpenHelper @Inject constructor(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "thefDB", null, 1) {
     companion object {
         private var instance: MyDatabaseOpenHelper? = null
 
@@ -19,7 +19,6 @@ class MyDatabaseOpenHelper @Inject constructor(ctx: Context) : ManagedSQLiteOpen
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        // Here you create tables
         db.createTable("pedidos", true,
                 "id" to INTEGER + PRIMARY_KEY  + AUTOINCREMENT,
                 "id_client" to INTEGER + NOT_NULL,
@@ -32,10 +31,7 @@ class MyDatabaseOpenHelper @Inject constructor(ctx: Context) : ManagedSQLiteOpen
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Here you can upgrade tables, as usual
         db.dropTable("id_pedido", true)
         db.dropTable("pedidos", true)
     }
 }
-val Context.database: MyDatabaseOpenHelper
-    get() = MyDatabaseOpenHelper.getInstance(applicationContext)

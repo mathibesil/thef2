@@ -10,7 +10,6 @@ import dagger.android.AndroidInjection
 /**
  */
 abstract class BaseActivity: AppCompatActivity(), MVPView, BaseFragment.CallBack{
-    lateinit var progressBar: ProgressBar
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         performDi()
@@ -18,15 +17,6 @@ abstract class BaseActivity: AppCompatActivity(), MVPView, BaseFragment.CallBack
 
     private fun performDi() = AndroidInjection.inject(this)
 
-    override fun showProgress(){
-        hideProgress()
-        progressBar.visibility = View.VISIBLE
-        blockUi()
-    }
-    override fun hideProgress(){
-        progressBar.visibility = View.GONE
-        unBlockUi()
-    }
     override fun showMessage(texto: String){
         Toast.makeText(this,texto, Toast.LENGTH_LONG).show()
     }
